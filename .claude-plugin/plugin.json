@@ -1,0 +1,20 @@
+{
+  "name": "total-recall",
+  "version": "0.0.1",
+  "description": "Semantic file triggers — sample model associations to generate training-data-resonant recall phrases.",
+  "author": {
+    "name": "Daniel Zenner",
+    "email": "daniel@zenner.dev",
+    "url": "https://github.com/brewpirate"
+  },
+  "repository": "https://github.com/brewpirate/total-recall",
+  "license": "MIT",
+  "keywords": [
+    "claude",
+    "plugin",
+    "semantic triggers",
+    "file recall",
+    "context management",
+    "attention reactivation"
+  ]
+}
