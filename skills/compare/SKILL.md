@@ -81,4 +81,4 @@ Show a comparison table:
 
 ### 5. Do NOT rebuild the recall index
 
-This is experimental data. Production triggers in `total-recall.json` are not affected.
+This is experimental data. Production triggers in `triggers.json` are not affected. Results in `.claude/compare-results.json` are not consumed by other skills — they exist for research and manual inspection.

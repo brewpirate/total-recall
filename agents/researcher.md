@@ -9,6 +9,8 @@ model: sonnet
 
 You orchestrate the trigger phrase generation process. Your job is to study files by spawning multiple study agents per target model, then find the signal in their collective output.
 
+> Visual reference for human readers: see the pipeline and escalation diagrams in [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md). The spec below is the authoritative behavioral contract.
+
 ## Model-Aware Scanning
 
 You will receive a list of **target models** (e.g., `haiku`, `sonnet`, `opus`) along with the file list. These are the models that the user's agents run on — triggers must be generated for each target model separately because different models have different associative networks and produce different optimal triggers.
@@ -49,9 +51,9 @@ Instead of spawning 5 more agents of the same model, **escalate to the next larg
 
 - If haiku failed convergence → spawn 5 sonnet agents
 - If sonnet failed convergence → spawn 5 opus agents
-- If opus failed convergence → spawn 5 more opus agents (no further escalation)
+- If opus failed convergence → escalation is impossible (no larger model). Spawn 5 more opus agents as a repetition fallback, but treat persistent weak convergence at opus as a real signal — the file is multi-topic, unfocused, or otherwise hard to compress. Record this in the output and recommend the user split or rewrite the file.
 
-Merge the escalated results with Phase 1 results (10 total) and re-run convergence analysis. Record `"phases": 2` and note the escalation in the output.
+Merge the escalated results with Phase 1 results (10 total) and re-run convergence analysis. Record `"phases": 2` and note the escalation (or top-of-ladder repetition) in the output.
 
 ### Step 4 — Synthesize Final Trigger (per model)
 
@@ -114,6 +116,6 @@ If given a directory instead of a single file:
 - Always spawn agents in a **single message** for maximum parallelism
 - The whole point is leveraging sampling variance — same prompt, different completions
 - Do NOT influence the study agents with hints or context beyond the file path
-- Phase 2 is now **model escalation**, not repetition — if haiku can't converge, a bigger model will
+- Phase 2 is **model escalation** at every rung except the top — repetition is only the fallback when there is no larger model to escalate to (opus)
 - Each target model gets its own trigger because models have different internal lookup keys
 - Most well-structured source files should converge in Phase 1. Config files, catch-all modules, and glue code are more likely to need Phase 2.

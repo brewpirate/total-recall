@@ -8,13 +8,13 @@ allowed-tools: Read, Edit
 
 ## Overview
 
-Reads `total-recall.json` and builds `.claude/recall-index.json` — a reverse lookup that maps individual words and terms to the files they came from, organized by model. When an agent encounters a concept, it checks the index to find which files are relevant and gets the trigger phrase optimized for its own model.
+Reads `.claude/triggers.json` and builds `.claude/recall-index.json` — a reverse lookup that maps individual words and terms to the files they came from, organized by model. When an agent encounters a concept, it checks the index to find which files are relevant and gets the trigger phrase optimized for its own model.
 
 ## Process
 
 ### 1. Read Triggers
 
-Read `total-recall.json`. If it doesn't exist or has no triggers, report "No triggers to index. Run `/total-recall:scan` first."
+Read `.claude/triggers.json`. If it doesn't exist or has no triggers, report "No triggers to index. Run `/total-recall:scan` first."
 
 ### 2. Build Reverse Index
 
@@ -87,7 +87,7 @@ Write `.claude/recall-index.json`:
 }
 ```
 
-The key change: each index entry under a model includes the **phrase** field — so an agent can look up a term and immediately get the trigger phrase optimized for its own model, without reading total-recall.json.
+The key change: each index entry under a model includes the **phrase** field — so an agent can look up a term and immediately get the trigger phrase optimized for its own model, without reading triggers.json.
 
 ### 5. Prune Noise
 

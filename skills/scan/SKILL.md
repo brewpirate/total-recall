@@ -44,7 +44,7 @@ The researcher will spawn 5 study agents per model per file and perform per-mode
 
 ### 4. Store Results
 
-Read `.claude/total-recall.json` (create if it doesn't exist with `{"version": 2, "triggers": {}}`).
+Read `.claude/triggers.json` (create if it doesn't exist with `{"version": 2, "triggers": {}}`).
 
 For each file result from the researcher, merge into the triggers object using the **model-scoped** format:
 
@@ -99,8 +99,8 @@ src/db/connection.ts        | opus   | database pool lifecycle rules  | 0.95
 Cross-model terms: jwt, route, database, pool
 ```
 
-If any file had low confidence (< 0.6), note it and suggest rescanning or model escalation.
+If any file had low confidence (< 0.7), note it and suggest rescanning, model escalation, or splitting the file (low convergence often means the file covers multiple unrelated topics — see "resonance linting" in the README).
 
 ### Migration Note
 
-If `.claude/total-recall.json` has `"version": 1` (old format with flat phrases), the scan will overwrite entries for scanned files with the new model-scoped format. Unscanned files retain the old format until re-scanned.
+If `.claude/triggers.json` has `"version": 1` (old format with flat phrases), the scan will overwrite entries for scanned files with the new model-scoped format. Unscanned files retain the old format until re-scanned.

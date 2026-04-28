@@ -1,7 +1,6 @@
 ---
 name: schedule
 description: "Discover files with trigger_phrase and/or refresh frontmatter, let the user choose which to schedule for periodic re-injection via CronCreate. Prevents behavioral drift by keeping core rules and goals fresh in context."
-user-invocable: true
 ---
 
 # Schedule — Periodic Trigger and Rule Injection
@@ -69,7 +68,7 @@ Example:
 >
 > 1. `.claude/rules/broken-windows.md` — trigger: "broken windows zero tolerance" — interval: 15m
 > 2. `.claude/rules/error-handling.md` — trigger: "boundary validation fail fast" — interval: 20m
-> 3. `plugins/zenflow/skills/collab/SKILL.md` — trigger: "collaborative session partnership" — interval: 30m
+> 3. `.claude/skills/collab/SKILL.md` — trigger: "collaborative session partnership" — interval: 30m
 > 4. `CLAUDE.md` — no trigger, will re-read — interval: 10m
 
 ### 3. Confirm Intervals
@@ -154,14 +153,14 @@ All schedules are session-scoped:
 - They die when the session exits
 - They only fire while Claude is idle (not mid-response)
 - They auto-expire after 7 days
-- Re-run `/zenflow:schedule` in each new session to re-activate
+- Re-run `/total-recall:schedule` in each new session to re-activate
 
-For cross-session persistence, users should set up Desktop scheduled tasks or Routines (outside this skill's scope).
+For cross-session persistence, users should set up Desktop scheduled tasks or Routines (outside this skill's scope). A future SessionStart-hook-based auto-restore is planned (see plan F7).
 
 ## What Not to Do
 
 - **Don't schedule without asking.** Every file goes through `AskUserQuestion`.
 - **Don't schedule too aggressively.** Injections every 2 minutes flood context. Minimum practical interval is 5m.
-- **Don't re-read large files on tight intervals.** If a file is > 200 lines and has no trigger_phrase, suggest the user run `/total-recall:write` first to generate a cheap trigger.
+- **Don't re-read large files on tight intervals.** If a file is > 200 lines and has no trigger_phrase, suggest the user run `/total-recall:scan` followed by `/total-recall:write` first to generate a cheap trigger.
 - **Don't create duplicate schedules.** Check `CronList` before creating. If a job already exists for a file, ask the user if they want to replace it.
 - **Don't inject silently.** The injection prompt asks the agent to briefly acknowledge — this makes the refresh visible in the conversation.

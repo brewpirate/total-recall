@@ -1,6 +1,6 @@
 ---
-name: add-trigger-to-frontmatter
-description: "Write trigger phrases from .claude/total-recall.json into file frontmatter as model-scoped trigger_phrase fields. Bridges trigger generation (scan) with scheduled injection (total-recall-schedule)."
+name: write
+description: "Write trigger phrases from .claude/triggers.json into file frontmatter as model-scoped trigger_phrase fields. Bridges trigger generation (scan) with scheduled injection (total-recall:schedule)."
 allowed-tools: Read, Edit, Glob, Grep, Bash, AskUserQuestion
 ---
 
@@ -8,7 +8,7 @@ allowed-tools: Read, Edit, Glob, Grep, Bash, AskUserQuestion
 
 ## Overview
 
-Read `.claude/total-recall.json` and write each file's trigger phrases into its YAML frontmatter as model-scoped `trigger_phrase` fields. This makes triggers discoverable by tools that read frontmatter (like `zenflow:schedule`) without requiring a separate JSON lookup.
+Read `.claude/triggers.json` and write each file's trigger phrases into its YAML frontmatter as model-scoped `trigger_phrase` fields. This makes triggers discoverable by tools that read frontmatter (like `total-recall:schedule`) without requiring a separate JSON lookup.
 
 ## Target Format
 
@@ -31,7 +31,7 @@ Only models with triggers are included. Existing frontmatter fields are preserve
 
 ### 1. Read Triggers
 
-Read `.claude/total-recall.json`. If it doesn't exist, report: "No triggers found. Run `/total-recall:scan` first to generate triggers."
+Read `.claude/triggers.json`. If it doesn't exist, report: "No triggers found. Run `/total-recall:scan` first to generate triggers."
 
 Parse the version 2 format:
 ```json
@@ -50,13 +50,13 @@ Parse the version 2 format:
 
 ### 2. Check Each File
 
-For each file in total-recall.json:
+For each file in triggers.json:
 
 1. **Check if the file exists.** If not, note it as skipped (file may have been deleted or moved since scanning).
 2. **Read the file** and parse its YAML frontmatter (content between `---` delimiters).
-3. **Compare** the existing `trigger_phrase` in frontmatter (if any) against total-recall.json.
+3. **Compare** the existing `trigger_phrase` in frontmatter (if any) against triggers.json.
 4. **Classify** the file as:
-   - **Up to date** — frontmatter `trigger_phrase` matches total-recall.json exactly
+   - **Up to date** — frontmatter `trigger_phrase` matches triggers.json exactly
    - **Needs update** — frontmatter is missing `trigger_phrase` or has stale values
    - **No frontmatter** — file has no YAML frontmatter at all
    - **Missing file** — file no longer exists
@@ -128,17 +128,17 @@ After all writes complete, summarize:
 Trigger phrases written to frontmatter:
 
   Updated:
-    ✓ plugins/total-recall/skills/index/SKILL.md (opus)
-    ✓ plugins/total-recall/skills/scan/SKILL.md (opus, sonnet)
+    ✓ skills/index/SKILL.md (opus)
+    ✓ skills/scan/SKILL.md (opus, sonnet)
 
   Skipped (already current):
-    - plugins/total-recall/skills/list/SKILL.md
+    - skills/list/SKILL.md
 
   Skipped (user declined):
-    - plugins/total-recall/skills/forget/SKILL.md
+    - skills/forget/SKILL.md
 
   Skipped (file missing):
-    - plugins/zenflow/skills/review/old-code-reviewer.md
+    - some/old-path.md
 
   Total: N updated, N skipped
 ```
@@ -148,8 +148,8 @@ Trigger phrases written to frontmatter:
 - **File deleted since scan:** Skip and note. Don't error.
 - **File has no frontmatter:** Ask user before adding. Some files (like plain markdown docs) shouldn't get frontmatter.
 - **Frontmatter has unusual formatting:** Preserve the original indentation style. If parsing fails, skip the file and report the error.
-- **total-recall.json is version 1 (no model scoping):** Report "total-recall.json is version 1 (no model scoping). Run `/total-recall:scan --models` to generate model-scoped triggers first."
-- **Empty total-recall.json:** Report "No triggers stored. Run `/total-recall:scan` to generate some."
+- **triggers.json is version 1 (no model scoping):** Report "triggers.json is version 1 (no model scoping). Run `/total-recall:scan --models` to generate model-scoped triggers first."
+- **Empty triggers.json:** Report "No triggers stored. Run `/total-recall:scan` to generate some."
 
 ## What Not to Do
 
