@@ -6,6 +6,25 @@
 
 ---
 
+## Install
+
+In Claude Code:
+
+```
+/plugin install brewpirate/total-recall
+```
+
+This adds the plugin's commands (`/total-recall:scan`, `/total-recall:write`, `/total-recall:schedule`, etc.) to your session.
+
+**Prerequisites**
+- Claude Code (any recent version)
+- Model access for at least one of `haiku`, `sonnet`, `opus` — the pipeline can use any one, but `--models sonnet` is the recommended default
+- Write access to a `.claude/` directory in the project root (the plugin stores `triggers.json` and `recall-index.json` there)
+
+**Verify install** — run `/total-recall:list` in a fresh session. If you see "No triggers stored yet. Run `/total-recall:scan` to generate some." the plugin is loaded correctly. If the command isn't recognized, the plugin didn't install — see [docs/QUICKSTART.md](docs/QUICKSTART.md#step-0--install) for troubleshooting and local-development install.
+
+---
+
 ## Start here
 
 | Doc | For |
